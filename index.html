@@ -511,9 +511,17 @@
             flex-direction: column;
         }
 
-        .video-item {
-            padding: 15px 20px;
+        .video-item-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .video-item {
+            flex: 1;
+            padding: 15px 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             background: transparent;
@@ -535,6 +543,29 @@
             color: white;
             border-left: 3px solid #3243c3;
             padding-left: 17px;
+        }
+
+        .video-delete-btn {
+            padding: 8px 12px;
+            background: rgba(220, 53, 69, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+        }
+
+        .video-delete-btn:hover {
+            background: rgba(220, 53, 69, 0.3);
+            border-color: rgba(220, 53, 69, 0.5);
+            color: #ff8787;
         }
 
         .video-item-number {
@@ -1306,15 +1337,67 @@
             videoList.innerHTML = '';
 
             currentVideos.forEach((video, index) => {
-                const item = document.createElement('button');
-                item.className = 'video-item';
+                const item = document.createElement('div');
+                item.className = 'video-item-container';
+                
+                const button = document.createElement('button');
+                button.className = 'video-item';
                 if (index === currentVideoIndex) {
-                    item.classList.add('active');
+                    button.classList.add('active');
                 }
-                item.innerHTML = `<span class="video-item-number">${index + 1}</span>${video.title}`;
-                item.onclick = () => loadVideo(index);
+                button.innerHTML = `<span class="video-item-number">${index + 1}</span>${video.title}`;
+                button.onclick = () => loadVideo(index);
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'video-delete-btn';
+                deleteBtn.innerHTML = '🗑️';
+                deleteBtn.title = 'Deletar vídeo';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteVideo(video.id);
+                };
+                
+                item.appendChild(button);
+                if (currentUser.role === 'admin') {
+                    item.appendChild(deleteBtn);
+                }
                 videoList.appendChild(item);
             });
+        }
+
+        // DELETAR VÍDEO
+        function deleteVideo(videoId) {
+            if (!confirm('Tem certeza que deseja deletar este vídeo?')) {
+                return;
+            }
+
+            // Remover do array
+            const index = currentVideos.findIndex(v => v.id === videoId);
+            if (index !== -1) {
+                currentVideos.splice(index, 1);
+            }
+
+            // Atualizar localStorage
+            let courseContent = JSON.parse(localStorage.getItem('courseContent') || '{}');
+            if (courseContent[currentCourseId]) {
+                courseContent[currentCourseId] = courseContent[currentCourseId].filter(v => v.id !== videoId);
+                localStorage.setItem('courseContent', JSON.stringify(courseContent));
+            }
+
+            // Se não há mais vídeos, voltar para cursos
+            if (currentVideos.length === 0) {
+                alert('Todos os vídeos foram deletados. Voltando para a lista de cursos...');
+                backToCourses();
+                return;
+            }
+
+            // Se o vídeo deletado era o atual, carregar o anterior
+            if (currentVideoIndex >= currentVideos.length) {
+                currentVideoIndex = currentVideos.length - 1;
+            }
+
+            loadVideoList();
+            loadVideo(currentVideoIndex);
         }
 
         // NAVEGAÇÃO
