@@ -868,8 +868,14 @@
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 20px;
-                margin-bottom: 20px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: none;
+                border-bottom: 2px solid rgba(50, 67, 195, 0.2);
+            }
+
+            .sidebar-logo img {
+                width: 70px;
             }
 
             .main-content {
@@ -878,34 +884,256 @@
             }
 
             .top-bar {
-                padding: 30px 20px;
+                padding: 20px 15px;
             }
 
             .top-bar h1 {
-                font-size: 24px;
+                font-size: 20px;
+            }
+
+            .top-bar p {
+                font-size: 13px;
             }
 
             .courses-container {
                 grid-template-columns: 1fr;
-                padding: 20px;
-                gap: 20px;
+                padding: 15px;
+                gap: 15px;
             }
 
             .video-player-view {
-                padding: 20px;
+                padding: 15px;
             }
 
             .video-player-container {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 15px;
+                height: auto;
+            }
+
+            .video-frame {
+                height: 250px;
+                border-radius: 8px;
             }
 
             .video-sidebar {
-                max-height: 400px;
+                max-height: 300px;
+                border-radius: 8px;
+            }
+
+            .video-item {
+                padding: 12px 15px;
+                font-size: 12px;
+            }
+
+            .video-delete-btn {
+                padding: 6px 10px;
+                min-width: 32px;
+                height: 32px;
+                font-size: 12px;
+                margin-right: 8px;
+            }
+
+            .video-info {
+                padding: 15px;
+            }
+
+            .video-title {
+                font-size: 16px;
+            }
+
+            .video-description {
+                font-size: 13px;
+            }
+
+            .nav-button {
+                padding: 10px 16px;
+                font-size: 12px;
             }
 
             .admin-panel {
+                padding: 15px;
+            }
+
+            .admin-panel h2 {
+                font-size: 16px;
+            }
+
+            .form-group-admin input,
+            .form-group-admin textarea,
+            .form-group-admin select {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .upload-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            .sidebar {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .sidebar-logo img {
+                width: 50px;
+            }
+
+            .sidebar-title {
+                font-size: 11px;
+            }
+
+            .course-item {
+                padding: 8px;
+                font-size: 11px;
+            }
+
+            .top-bar {
+                padding: 12px 10px;
+            }
+
+            .top-bar h1 {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+
+            .top-bar p {
+                font-size: 11px;
+            }
+
+            .courses-container {
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .course-card {
+                padding: 12px;
+            }
+
+            .course-card-image {
+                height: 100px;
+            }
+
+            .course-card-title {
+                font-size: 13px;
+            }
+
+            .course-card-button {
+                padding: 8px;
+                font-size: 11px;
+            }
+
+            .video-player-view {
+                padding: 10px;
+            }
+
+            .video-frame {
+                height: 180px;
+                border-radius: 6px;
+            }
+
+            .video-sidebar {
+                max-height: 220px;
+                border-radius: 6px;
+            }
+
+            .video-item {
+                padding: 10px 12px;
+                font-size: 11px;
+            }
+
+            .video-item-number {
+                width: 18px;
+                height: 18px;
+                font-size: 9px;
+                line-height: 18px;
+            }
+
+            .video-delete-btn {
+                padding: 4px 8px;
+                min-width: 26px;
+                height: 26px;
+                font-size: 10px;
+                margin-right: 6px;
+            }
+
+            .video-info {
+                padding: 10px;
+            }
+
+            .video-title {
+                font-size: 13px;
+            }
+
+            .video-description {
+                font-size: 11px;
+            }
+
+            .video-navigation {
+                gap: 8px;
+                margin-top: 12px;
+            }
+
+            .nav-button {
+                padding: 8px 10px;
+                font-size: 10px;
+                flex: 1;
+            }
+
+            .nav-progress {
+                font-size: 10px;
+            }
+
+            .admin-panel {
+                padding: 10px;
+                margin-bottom: 12px;
+            }
+
+            .admin-panel h2 {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+
+            .form-group-admin input,
+            .form-group-admin textarea,
+            .form-group-admin select {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .form-group-admin textarea {
+                min-height: 70px;
+            }
+
+            .upload-btn {
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+
+            .login-box {
                 padding: 20px;
+                max-width: 90%;
+            }
+
+            .login-title {
+                font-size: 18px;
+            }
+
+            .form-input {
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .login-button {
+                padding: 9px;
+                font-size: 11px;
             }
         }
     </style>
