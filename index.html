@@ -22,6 +22,11 @@
         .container {
             display: flex;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .container.sidebar-collapsed {
+            margin-left: 0;
         }
 
         /* ===== SIDEBAR ===== */
@@ -34,6 +39,31 @@
             overflow-y: auto;
             box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
             z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .hamburger-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 101;
+            background: rgba(50, 67, 195, 0.2);
+            border: 1px solid rgba(50, 67, 195, 0.4);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn:hover {
+            background: rgba(50, 67, 195, 0.3);
         }
 
         .sidebar-logo {
@@ -977,9 +1007,27 @@
                 font-size: 14px;
             }
 
+            .hamburger-btn {
+                display: block;
+            }
+
             .sidebar {
                 padding: 12px;
                 margin-bottom: 12px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 220px;
+                height: 100vh;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
             }
 
             .sidebar-logo img {
@@ -996,7 +1044,7 @@
             }
 
             .top-bar {
-                padding: 12px 10px;
+                padding: 50px 10px 12px 10px;
             }
 
             .top-bar h1 {
@@ -1162,10 +1210,13 @@
         </div>
     </div>
 
+    <!-- HAMBURGER BUTTON -->
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()">☰</button>
+
     <!-- DASHBOARD CONTAINER -->
     <div id="dashboardContainer" class="container hidden">
         <!-- SIDEBAR -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <img src="logo-santiago.png" alt="Logo Grupo Santiago">
             </div>
@@ -1189,36 +1240,62 @@
             </div>
 
             <div id="adminPanel" class="admin-panel hidden">
-                <h2>⚙️ Painel de Administração</h2>
-                <div id="successMessage" class="success-message">✅ Conteúdo adicionado com sucesso!</div>
-                <form class="admin-form" onsubmit="handleUpload(event)">
-                    <div class="form-group-admin">
-                        <label>Título do Conteúdo</label>
-                        <input type="text" id="contentTitle" placeholder="Ex: Aula 1 - Introdução ao MCMV" required>
-                    </div>
-                    <div class="form-group-admin">
-                        <label>Descrição</label>
-                        <textarea id="contentDescription" placeholder="Descrição do conteúdo..." required></textarea>
-                    </div>
-                    <div class="form-group-admin">
-                        <label>Selecione o Curso</label>
-                        <select id="courseSelect" required>
-                            <option value="0">-- Escolha um curso --</option>
-                            <option value="1">Minha Casa Minha Vida</option>
-                            <option value="2">Financiamento Caixa</option>
-                            <option value="3">Técnicas de Vendas</option>
-                            <option value="4">Documentação</option>
-                            <option value="5">Elegibilidade</option>
-                            <option value="6">Pós-Venda</option>
-                            <option value="7">Investimentos</option>
-                        </select>
-                    </div>
-                    <div class="form-group-admin">
-                        <label>URL do Vídeo (YouTube, Vimeo, etc)</label>
-                        <input type="url" id="videoUrl" placeholder="https://..." required>
-                    </div>
-                    <button type="submit" class="upload-btn">📤 Adicionar Conteúdo</button>
-                </form>
+                <h2>⚠️ Painel de Administração</h2>
+                <div id="successMessage" class="success-message">✅ Operação realizada com sucesso!</div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px; flex-wrap: wrap;">
+                    <button class="admin-tab active" onclick="switchAdminTab('content')" style="background: rgba(50, 67, 195, 0.3); color: white; border: 1px solid rgba(50, 67, 195, 0.5); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.3s ease;">📚 Conteúdo</button>
+                    <button class="admin-tab" onclick="switchAdminTab('users')" style="background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.3s ease;">👥 Usuários</button>
+                </div>
+
+                <div id="contentTab" class="admin-tab-content">
+                    <form class="admin-form" onsubmit="handleUpload(event)">
+                        <div class="form-group-admin">
+                            <label>Título do Conteúdo</label>
+                            <input type="text" id="contentTitle" placeholder="Ex: Aula 1 - Introdução ao MCMV" required>
+                        </div>
+                        <div class="form-group-admin">
+                            <label>Descrição</label>
+                            <textarea id="contentDescription" placeholder="Descrição do conteúdo..." required></textarea>
+                        </div>
+                        <div class="form-group-admin">
+                            <label>Selecione o Curso</label>
+                            <select id="courseSelect" required>
+                                <option value="0">-- Escolha um curso --</option>
+                                <option value="1">Minha Casa Minha Vida</option>
+                                <option value="2">Financiamento Caixa</option>
+                                <option value="3">Técnicas de Vendas</option>
+                                <option value="4">Documentação</option>
+                                <option value="5">Elegibilidade</option>
+                                <option value="6">Pós-Venda</option>
+                                <option value="7">Investimentos</option>
+                            </select>
+                        </div>
+                        <div class="form-group-admin">
+                            <label>URL do Vídeo (YouTube, Vimeo, etc)</label>
+                            <input type="url" id="videoUrl" placeholder="https://..." required>
+                        </div>
+                        <button type="submit" class="upload-btn">📄 Adicionar Conteúdo</button>
+                    </form>
+                </div>
+
+                <div id="usersTab" class="admin-tab-content hidden">
+                    <h3 style="color: white; margin-bottom: 15px; font-size: 14px;">Criar Novo Usuário</h3>
+                    <form class="admin-form" onsubmit="handleCreateUser(event)">
+                        <div class="form-group-admin">
+                            <label>Novo Usuário</label>
+                            <input type="text" id="newUsername" placeholder="Digite o novo usuário" required>
+                        </div>
+                        <div class="form-group-admin">
+                            <label>Senha</label>
+                            <input type="password" id="newPassword" placeholder="Digite a senha" required>
+                        </div>
+                        <button type="submit" class="upload-btn">➕ Criar Usuário</button>
+                    </form>
+
+                    <h3 style="color: white; margin-top: 25px; margin-bottom: 15px; font-size: 14px;">Gerenciar Usuários</h3>
+                    <div id="usersList" style="display: grid; gap: 10px;"></div>
+                </div>
             </div>
 
             <!-- COURSES GRID VIEW -->
@@ -1350,11 +1427,15 @@
         ];
 
         // USUÁRIOS DE TESTE
-        const users = {
-            'corretor1': 'senha123',
-            'corretor2': 'senha123',
-            'admin': 'admin123'
+        let users = JSON.parse(localStorage.getItem('users')) || {
+            'corretor1': { password: 'senha123', active: true },
+            'corretor2': { password: 'senha123', active: true },
+            'admin': { password: 'admin123', active: true }
         };
+
+        function saveUsers() {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
 
         let currentUser = null;
         let currentCourseId = null;
@@ -1368,7 +1449,7 @@
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('errorMessage');
 
-            if (users[username] && users[username] === password) {
+            if (users[username] && users[username].password === password && users[username].active) {
                 currentUser = { username, role: username === 'admin' ? 'admin' : 'user' };
                 localStorage.setItem('user', JSON.stringify(currentUser));
                 showDashboard();
@@ -1386,6 +1467,21 @@
             document.getElementById('dashboardContainer').classList.add('hidden');
             document.getElementById('loginForm').reset();
             document.getElementById('errorMessage').style.display = 'none';
+            closeSidebar();
+        }
+
+        // TOGGLE SIDEBAR
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // CLOSE SIDEBAR
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.remove('open');
+            }
         }
 
         // MOSTRAR DASHBOARD
@@ -1660,6 +1756,75 @@
             currentCourseId = null;
             currentVideos = [];
             currentVideoIndex = 0;
+        }
+
+        // SWITCH ADMIN TAB
+        function switchAdminTab(tab) {
+            const contentTab = document.getElementById('contentTab');
+            const usersTab = document.getElementById('usersTab');
+            const buttons = document.querySelectorAll('.admin-tab');
+
+            if (tab === 'content') {
+                contentTab.classList.remove('hidden');
+                usersTab.classList.add('hidden');
+                buttons[0].style.background = 'rgba(50, 67, 195, 0.3)';
+                buttons[1].style.background = 'transparent';
+            } else {
+                contentTab.classList.add('hidden');
+                usersTab.classList.remove('hidden');
+                buttons[0].style.background = 'transparent';
+                buttons[1].style.background = 'rgba(50, 67, 195, 0.3)';
+                loadUsersList();
+            }
+        }
+
+        // CRIAR NOVO USUARIO
+        function handleCreateUser(event) {
+            event.preventDefault();
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newPassword').value;
+
+            if (users[username]) {
+                alert('Usuário já existe!');
+                return;
+            }
+
+            users[username] = { password, active: true };
+            saveUsers();
+            alert('Usuário criado com sucesso!');
+            event.target.reset();
+            loadUsersList();
+        }
+
+        // CARREGAR LISTA DE USUARIOS
+        function loadUsersList() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+
+            Object.entries(users).forEach(function([username, data]) {
+                if (username === 'admin') return;
+
+                const userCard = document.createElement('div');
+                userCard.style.cssText = 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;';
+                userCard.innerHTML = '<div><div style="color: white; font-weight: 600; margin-bottom: 5px;">' + username + '</div><div style="color: rgba(255,255,255,0.6); font-size: 12px;">Status: <span style="color: ' + (data.active ? '#81c784' : '#ff6b6b') + ';">' + (data.active ? 'Ativo' : 'Inativo') + '</span></div></div><div style="display: flex; gap: 8px;"><button onclick="toggleUserStatus(\'' + username + '\')" style="background: ' + (data.active ? 'rgba(220, 53, 69, 0.2)' : 'rgba(76, 175, 80, 0.2)') + '; color: ' + (data.active ? '#ff6b6b' : '#81c784') + '; border: 1px solid ' + (data.active ? 'rgba(220, 53, 69, 0.3)' : 'rgba(76, 175, 80, 0.3)') + '; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 11px;">' + (data.active ? '🔒 Desativar' : '🔓 Ativar') + '</button><button onclick="deleteUser(\'' + username + '\')" style="background: rgba(220, 53, 69, 0.2); color: #ff6b6b; border: 1px solid rgba(220, 53, 69, 0.3); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 11px;">🗑️ Deletar</button></div>';
+                usersList.appendChild(userCard);
+            });
+        }
+
+        // TOGGLE STATUS DO USUARIO
+        function toggleUserStatus(username) {
+            users[username].active = !users[username].active;
+            saveUsers();
+            loadUsersList();
+        }
+
+        // DELETAR USUARIO
+        function deleteUser(username) {
+            if (confirm('Tem certeza que deseja deletar o usuário ' + username + '?')) {
+                delete users[username];
+                saveUsers();
+                loadUsersList();
+            }
         }
 
         // ALTERNAR PAINEL DE ADMIN
