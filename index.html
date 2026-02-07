@@ -1226,6 +1226,11 @@
             <div class="sidebar-section-title">Cursos</div>
             <div id="coursesList"></div>
 
+            <div class="sidebar-section-title">Recursos</div>
+            <div class="course-item" onclick="showScripts()" style="cursor: pointer;">
+                <span class="course-item-name">📄 Roteiros</span>
+            </div>
+
             <div class="sidebar-bottom">
                 <button id="adminBtn" class="admin-btn hidden" onclick="toggleAdminPanel()">⚙️ Painel Admin</button>
                 <button class="logout-btn" onclick="handleLogout()">🚪 Sair</button>
@@ -1304,8 +1309,19 @@
 
             <!-- COURSES GRID VIEW -->
             <div id="coursesView" class="courses-container"></div>
+            
+            <!-- ROTEIROS VIEW -->
+            <div id="scriptsView" class="courses-container hidden" style="display: none;">
+                <div style="grid-column: 1 / -1; padding: 40px 50px;">
+                    <h2 style="color: white; font-size: 28px; margin-bottom: 30px; font-family: 'Poppins', sans-serif;">📄 Roteiros de Conteúdo</h2>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 30px; font-size: 14px;">Acesse os roteiros completos de cada módulo para produção de vídeos</p>
+                    <div id="scriptsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <!-- VIDEO PLAYER VIEW -->
+    <!-- VIDEO PLAYER VIEW -->
             <div id="videoPlayerView" class="video-player-view">
                 <div class="video-player-header">
                     <div class="video-player-breadcrumb">
@@ -1542,7 +1558,81 @@
             loadCourses();
         }
 
-        // CARREGAR CURSOS
+        // MOSTRAR ROTEIROS
+        function showScripts() {
+            document.getElementById('coursesView').style.display = 'none';
+            document.getElementById('scriptsView').style.display = 'block';
+            document.querySelector('.top-bar h1').textContent = 'Roteiros de Conteúdo';
+            document.querySelector('.top-bar p').textContent = 'Guias completos para produção de vídeos';
+            loadScripts();
+        }
+
+        // CARREGAR ROTEIROS
+        function loadScripts() {
+            const scripts = [
+                { id: 1, title: '🏠 Minha Casa Minha Vida', file: 'mcmv-content.md', aulas: 12, duracao: '170 min' },
+                { id: 2, title: '💰 Financiamento Caixa', file: 'financiamento-caixa-content.md', aulas: 12, duracao: '170 min' },
+                { id: 3, title: '💼 Técnicas de Vendas', file: 'tecnicas-vendas-content.md', aulas: 12, duracao: '170 min' },
+                { id: 4, title: '📋 Documentação', file: 'documentacao-content.md', aulas: 12, duracao: '170 min' },
+                { id: 5, title: '✅ Elegibilidade', file: 'elegibilidade-content.md', aulas: 12, duracao: '170 min' },
+                { id: 6, title: '⭐ Pós-Venda', file: 'pos-venda-content.md', aulas: 12, duracao: '170 min' },
+                { id: 7, title: '📈 Investimentos', file: 'investimentos-content.md', aulas: 12, duracao: '170 min' },
+                { id: 8, title: '📱 Marketing Digital', file: 'marketing-digital-content.md', aulas: 12, duracao: '180 min' },
+                { id: 9, title: '⏰ Gestão de Tempo', file: 'gestao-tempo-content.md', aulas: 12, duracao: '170 min' },
+                { id: 10, title: '🎯 Captação de Imóveis', file: 'captacao-imoveis-content.md', aulas: 12, duracao: '170 min' },
+                { id: 11, title: '📚 Ferramentas e E-books', file: 'ferramentas-ebooks-content.md', aulas: 12, duracao: '170 min' }
+            ];
+
+            const scriptsList = document.getElementById('scriptsList');
+            scriptsList.innerHTML = '';
+
+            scripts.forEach(script => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <div class="course-card-image" style="background: linear-gradient(135deg, #3243c3 0%, #1a3a52 100%);">
+                        <span style="font-size: 80px;">${script.title.split(' ')[0]}</span>
+                    </div>
+                    <div class="course-card-content">
+                        <h3 class="course-card-title">${script.title}</h3>
+                        <div class="course-card-meta" style="margin: 15px 0;">
+                            <div class="course-card-meta-item">
+                                <span class="course-card-meta-icon">📚</span>
+                                <span>${script.aulas} aulas</span>
+                            </div>
+                            <div class="course-card-meta-item">
+                                <span class="course-card-meta-icon">⏱️</span>
+                                <span>${script.duracao}</span>
+                            </div>
+                        </div>
+                        <p style="color: rgba(0,0,0,0.6); font-size: 13px; margin-bottom: 15px;">Roteiro completo com estrutura de aulas e tópicos</p>
+                        <button class="course-card-button" onclick="downloadScript('${script.file}', '${script.title}')">📥 Baixar Roteiro</button>
+                    </div>
+                `;
+                scriptsList.appendChild(card);
+            });
+        }
+
+        // BAIXAR ROTEIRO
+        function downloadScript(filename, title) {
+            fetch(filename)
+                .then(response => response.text())
+                .then(content => {
+                    const element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+                    element.setAttribute('download', filename);
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                    alert('✅ Roteiro "' + title + '" baixado com sucesso!');
+                })
+                .catch(error => {
+                    alert('❌ Erro ao baixar roteiro. Verifique se o arquivo existe.');
+                    console.error('Erro:', error);
+                });
+        }
+
         function loadCourses() {
             const coursesList = document.getElementById('coursesList');
             const coursesView = document.getElementById('coursesView');
@@ -1781,6 +1871,7 @@
         function backToCourses() {
             document.getElementById('videoPlayerView').classList.remove('active');
             document.getElementById('coursesView').style.display = 'grid';
+            document.getElementById('scriptsView').style.display = 'none';
             
             const courseItems = document.querySelectorAll('.course-item');
             courseItems.forEach(item => item.classList.remove('active'));
@@ -1796,6 +1887,8 @@
             currentCourseId = null;
             currentVideos = [];
             currentVideoIndex = 0;
+            document.querySelector('.top-bar h1').textContent = 'Bem-vindo';
+            document.querySelector('.top-bar p').textContent = 'Desenvolvendo profissionais imobiliarios';
         }
 
         // SWITCH ADMIN TAB
