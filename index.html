@@ -810,6 +810,12 @@
             document.getElementById('videoPlayerView').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'none';
             document.getElementById('roteirosView').style.display = 'none';
+            // Atualizar visibilidade do Painel Admin
+            if (currentUser && currentUser.role === 'admin') {
+                document.getElementById('adminMenuDiv').style.display = 'block';
+            } else {
+                document.getElementById('adminMenuDiv').style.display = 'none';
+            }
             loadDashboard();
             closeSidebar();
         }
@@ -820,6 +826,12 @@
             document.getElementById('videoPlayerView').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'none';
             document.getElementById('roteirosView').style.display = 'none';
+            // Atualizar visibilidade do Painel Admin
+            if (currentUser && currentUser.role === 'admin') {
+                document.getElementById('adminMenuDiv').style.display = 'block';
+            } else {
+                document.getElementById('adminMenuDiv').style.display = 'none';
+            }
             loadCourses();
             closeSidebar();
         }
@@ -831,6 +843,8 @@
             document.getElementById('videoPlayerView').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             document.getElementById('roteirosView').style.display = 'none';
+            // Mostrar Painel Admin
+            document.getElementById('adminMenuDiv').style.display = 'block';
             loadAdminPanel();
             closeSidebar();
         }
@@ -841,6 +855,12 @@
             document.getElementById('videoPlayerView').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'none';
             document.getElementById('roteirosView').style.display = 'block';
+            // Atualizar visibilidade do Painel Admin
+            if (currentUser && currentUser.role === 'admin') {
+                document.getElementById('adminMenuDiv').style.display = 'block';
+            } else {
+                document.getElementById('adminMenuDiv').style.display = 'none';
+            }
             loadRoteiros();
             closeSidebar();
         }
