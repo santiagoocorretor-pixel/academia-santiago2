@@ -1347,8 +1347,7 @@
         function backFromRoteiroDetail() {
             const detailContainer = document.getElementById('roteiroDetail');
             if (detailContainer) {
-                detailContainer.innerHTML = '';
-                detailContainer.style.display = 'none';
+                detailContainer.remove(); // Remover completamente o container
             }
             document.getElementById('roteirosGrid').style.display = 'grid';
             loadRoteiros(); // Recarregar a lista de roteiros
