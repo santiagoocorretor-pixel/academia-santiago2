@@ -1311,7 +1311,7 @@
             <div id="coursesView" class="courses-container"></div>
             
             <!-- ROTEIROS VIEW -->
-            <div id="scriptsView" class="courses-container hidden" style="display: none;">
+            <div id="scriptsView" class="courses-container" style="display: none;">
                 <div style="grid-column: 1 / -1; padding: 40px 50px;">
                     <h2 style="color: white; font-size: 28px; margin-bottom: 30px; font-family: 'Poppins', sans-serif;">📄 Roteiros de Conteúdo</h2>
                     <p style="color: rgba(255,255,255,0.7); margin-bottom: 30px; font-size: 14px;">Acesse os roteiros completos de cada módulo para produção de vídeos</p>
@@ -1570,17 +1570,17 @@
         // CARREGAR ROTEIROS
         function loadScripts() {
             const scripts = [
-                { id: 1, title: '🏠 Minha Casa Minha Vida', file: 'mcmv-content.md', aulas: 12, duracao: '170 min' },
-                { id: 2, title: '💰 Financiamento Caixa', file: 'financiamento-caixa-content.md', aulas: 12, duracao: '170 min' },
-                { id: 3, title: '💼 Técnicas de Vendas', file: 'tecnicas-vendas-content.md', aulas: 12, duracao: '170 min' },
-                { id: 4, title: '📋 Documentação', file: 'documentacao-content.md', aulas: 12, duracao: '170 min' },
-                { id: 5, title: '✅ Elegibilidade', file: 'elegibilidade-content.md', aulas: 12, duracao: '170 min' },
-                { id: 6, title: '⭐ Pós-Venda', file: 'pos-venda-content.md', aulas: 12, duracao: '170 min' },
-                { id: 7, title: '📈 Investimentos', file: 'investimentos-content.md', aulas: 12, duracao: '170 min' },
-                { id: 8, title: '📱 Marketing Digital', file: 'marketing-digital-content.md', aulas: 12, duracao: '180 min' },
-                { id: 9, title: '⏰ Gestão de Tempo', file: 'gestao-tempo-content.md', aulas: 12, duracao: '170 min' },
-                { id: 10, title: '🎯 Captação de Imóveis', file: 'captacao-imoveis-content.md', aulas: 12, duracao: '170 min' },
-                { id: 11, title: '📚 Ferramentas e E-books', file: 'ferramentas-ebooks-content.md', aulas: 12, duracao: '170 min' }
+                { id: 1, title: '🏠 Minha Casa Minha Vida', aulas: 12, duracao: '170 min', conteudo: 'Programa de financiamento para primeira casa. Modulos: Fundamentos, Elegibilidade, Processo de Aprovacao, Subsidios, Estrategias de Venda, Acompanhamento e Pos-Venda.' },
+                { id: 2, title: '💰 Financiamento Caixa', aulas: 12, duracao: '170 min', conteudo: 'Tudo sobre financiamento imobiliario da Caixa. Modulos: Tipos de Financiamento, Taxas e Juros, Aprovacao de Credito, Documentacao, Simulacoes, Estrategias de Venda.' },
+                { id: 3, title: '💼 Tecnicas de Vendas', aulas: 12, duracao: '170 min', conteudo: 'Tecnicas comprovadas de vendas imobiliarias. Modulos: Prospeccao, Abordagem, Apresentacao, Objecoes, Fechamento, Acompanhamento.' },
+                { id: 4, title: '📋 Documentacao', aulas: 12, duracao: '170 min', conteudo: 'Documentacao completa para operacoes imobiliarias. Modulos: Documentos Pessoais, Comprovacao de Renda, Documentos Imobiliarios, Checklist por Tipo.' },
+                { id: 5, title: '✅ Elegibilidade', aulas: 12, duracao: '170 min', conteudo: 'Criterios de elegibilidade para financiamento. Modulos: Criterios de Renda, Patrimonio, Situacao Profissional, Restricoes, Avaliacao de Clientes.' },
+                { id: 6, title: '⭐ Pos-Venda', aulas: 12, duracao: '170 min', conteudo: 'Atendimento e relacionamento pos-venda. Modulos: Entrega, Satisfacao, Indicacoes, Programa de Referencia, Relacionamento Duradouro.' },
+                { id: 7, title: '📈 Investimentos', aulas: 12, duracao: '170 min', conteudo: 'Estrategias de investimento imobiliario. Modulos: Analise de Investimento, Rentabilidade, Diversificacao, Riscos, Casos de Sucesso.' },
+                { id: 8, title: '📱 Marketing Digital', aulas: 12, duracao: '180 min', conteudo: 'Marketing digital para corretores. Modulos: Redes Sociais, Email Marketing, Google Ads, SEO, Conteudo, Analise de Resultados.' },
+                { id: 9, title: '⏰ Gestao de Tempo', aulas: 12, duracao: '170 min', conteudo: 'Organizacao e produtividade para corretores. Modulos: Planejamento, Priorizacao, Ferramentas, Habitos, Equilibrio Vida-Trabalho.' },
+                { id: 10, title: '🎯 Captacao de Imoveis', aulas: 12, duracao: '170 min', conteudo: 'Tecnicas avancadas de captacao. Modulos: Prospecting, Abordagem, Avaliacao, Negociacao, Relacionamento, Fidelizacao.' },
+                { id: 11, title: '📚 Ferramentas e E-books', aulas: 12, duracao: '170 min', conteudo: 'Recursos e materiais para desenvolvimento profissional. Modulos: Ferramentas Digitais, E-books, Planilhas, Templates, Comunidade.' }
             ];
 
             const scriptsList = document.getElementById('scriptsList');
@@ -1605,32 +1605,17 @@
                                 <span>${script.duracao}</span>
                             </div>
                         </div>
-                        <p style="color: rgba(0,0,0,0.6); font-size: 13px; margin-bottom: 15px;">Roteiro completo com estrutura de aulas e tópicos</p>
-                        <button class="course-card-button" onclick="downloadScript('${script.file}', '${script.title}')">📥 Baixar Roteiro</button>
+                        <p style="color: rgba(0,0,0,0.6); font-size: 13px; margin-bottom: 15px;">${script.conteudo}</p>
+                        <button class="course-card-button" onclick="viewScript('${script.title}', '${script.conteudo}')">👁️ Ver Roteiro</button>
                     </div>
                 `;
                 scriptsList.appendChild(card);
             });
         }
 
-        // BAIXAR ROTEIRO
-        function downloadScript(filename, title) {
-            fetch(filename)
-                .then(response => response.text())
-                .then(content => {
-                    const element = document.createElement('a');
-                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-                    element.setAttribute('download', filename);
-                    element.style.display = 'none';
-                    document.body.appendChild(element);
-                    element.click();
-                    document.body.removeChild(element);
-                    alert('✅ Roteiro "' + title + '" baixado com sucesso!');
-                })
-                .catch(error => {
-                    alert('❌ Erro ao baixar roteiro. Verifique se o arquivo existe.');
-                    console.error('Erro:', error);
-                });
+        // VER ROTEIRO
+        function viewScript(title, conteudo) {
+            alert(title + '\n\n' + conteudo + '\n\nEste eh o roteiro para producao de videos. Cada aula tem estrutura completa com topicos, duracao e objetivos.');
         }
 
         function loadCourses() {
