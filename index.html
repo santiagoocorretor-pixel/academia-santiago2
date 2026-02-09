@@ -569,8 +569,8 @@
         <!-- SIDEBAR -->
         <div class="sidebar" id="sidebar">
             <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-            <div class="sidebar-logo">
-                <img src="./logo-santiago.png" alt="Logo Grupo Santiago">
+            <div class="sidebar-logo" onclick="showDashboard()" style="cursor: pointer;">
+                <img src="./logo-santiago.png" alt="Logo Grupo Santiago" style="cursor: pointer;">
             </div>
             <div class="sidebar-title">Universidade Grupo Santiago</div>
             <div class="sidebar-subtitle">Educação para Corretores</div>
@@ -1307,6 +1307,15 @@
             const completedCount = Object.values(progress).filter(v => v).length;
             const percentage = roteiros.length > 0 ? Math.round((completedCount / roteiros.length) * 100) : 0;
 
+            // Esconder a grid de roteiros e mostrar o detalhe
+            document.getElementById('roteirosGrid').style.display = 'none';
+            let detailContainer = document.getElementById('roteiroDetail');
+            if (!detailContainer) {
+                detailContainer = document.createElement('div');
+                detailContainer.id = 'roteiroDetail';
+                document.getElementById('roteirosView').appendChild(detailContainer);
+            }
+
             let html = `<div class="top-bar"><h1>${course.title}</h1><p>Total: ${roteiros.length} aulas | Conclusão: ${percentage}%</p></div>`;
             html += `<div style="background: white; padding: 30px; border-radius: 12px;">`;
             html += `<div style="margin-bottom: 20px;">`;
@@ -1328,11 +1337,20 @@
                 `;
             });
 
-            html += `<button class="btn-primary" onclick="showRoteiros()" style="margin-top: 20px;">← Voltar</button>`;
+            html += `<button class="btn-primary" onclick="backFromRoteiroDetail()" style="margin-top: 20px;">← Voltar</button>`;
             html += `</div>`;
             html += `</div>`;
 
-            document.getElementById('roteirosView').innerHTML = html;
+            detailContainer.innerHTML = html;
+        }
+
+        function backFromRoteiroDetail() {
+            const detailContainer = document.getElementById('roteiroDetail');
+            if (detailContainer) {
+                detailContainer.innerHTML = '';
+                detailContainer.style.display = 'none';
+            }
+            document.getElementById('roteirosGrid').style.display = 'grid';
         }
 
         function toggleAulaProgress(courseId, aulaIndex) {
