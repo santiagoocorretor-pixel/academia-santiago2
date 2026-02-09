@@ -755,7 +755,13 @@
             event.preventDefault();
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
-            const users = JSON.parse(localStorage.getItem('users') || '{"admin": {"password": "admin123", "role": "admin"}, "user": {"password": "user123", "role": "user"}}');
+            const defaultUsers = {
+                "admin": {"password": "admin123", "role": "admin", "active": true},
+                "user": {"password": "user123", "role": "user", "active": true},
+                "corretor1": {"password": "123456", "role": "user", "active": true},
+                "corretor2": {"password": "123456", "role": "user", "active": true}
+            };
+            const users = JSON.parse(localStorage.getItem('users') || JSON.stringify(defaultUsers));
 
             if (users[username] && users[username].password === password && users[username].active !== false) {
                 currentUser = { username, role: users[username].role };
@@ -790,6 +796,8 @@
             if (currentUser && currentUser.role === 'admin') {
                 document.getElementById('adminMenuDiv').style.display = 'block';
                 loadAdminPanel();
+            } else {
+                document.getElementById('adminMenuDiv').style.display = 'none';
             }
         });
 
@@ -1046,7 +1054,13 @@
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('users') || '{"admin": {"password": "admin123", "role": "admin"}, "user": {"password": "user123", "role": "user"}}');
+            const defaultUsers = {
+                "admin": {"password": "admin123", "role": "admin", "active": true},
+                "user": {"password": "user123", "role": "user", "active": true},
+                "corretor1": {"password": "123456", "role": "user", "active": true},
+                "corretor2": {"password": "123456", "role": "user", "active": true}
+            };
+            const users = JSON.parse(localStorage.getItem('users') || JSON.stringify(defaultUsers));
             if (users[username]) {
                 alert('Usuário já existe!');
                 return;
@@ -1062,7 +1076,13 @@
         }
 
         function loadUsersList() {
-            const users = JSON.parse(localStorage.getItem('users') || '{"admin": {"password": "admin123", "role": "admin"}, "user": {"password": "user123", "role": "user"}}');
+            const defaultUsers = {
+                "admin": {"password": "admin123", "role": "admin", "active": true},
+                "user": {"password": "user123", "role": "user", "active": true},
+                "corretor1": {"password": "123456", "role": "user", "active": true},
+                "corretor2": {"password": "123456", "role": "user", "active": true}
+            };
+            const users = JSON.parse(localStorage.getItem('users') || JSON.stringify(defaultUsers));
             const list = document.getElementById('usersList');
             list.innerHTML = '';
 
@@ -1118,13 +1138,26 @@
         function showRoteiroDetail(courseId) {
             const course = courses.find(c => c.id === courseId);
             const roteiros = courseRoteiros[courseId] || [];
+            const progressKey = `progress_${courseId}_${currentUser.username}`;
+            const progress = JSON.parse(localStorage.getItem(progressKey) || '{}');
+            const completedCount = Object.values(progress).filter(v => v).length;
+            const percentage = roteiros.length > 0 ? Math.round((completedCount / roteiros.length) * 100) : 0;
 
-            let html = `<div class="top-bar"><h1>${course.title}</h1><p>Total: ${roteiros.length} aulas</p></div><div style="background: white; padding: 30px; border-radius: 12px;">`;
+            let html = `<div class="top-bar"><h1>${course.title}</h1><p>Total: ${roteiros.length} aulas | Conclusão: ${percentage}%</p></div>`;
+            html += `<div style="background: white; padding: 30px; border-radius: 12px;">`;
+            html += `<div style="margin-bottom: 20px;">`;
+            html += `<p style="margin-bottom: 10px;">Progresso: ${completedCount}/${roteiros.length} aulas concluídas</p>`;
+            html += `<div style="background: #e0e0e0; height: 20px; border-radius: 10px; overflow: hidden;">`;
+            html += `<div style="background: linear-gradient(90deg, #3243c3, #1a3a52); height: 100%; width: ${percentage}%; transition: width 0.3s;"></div>`;
+            html += `</div>`;
+            html += `<p style="margin-top: 10px; font-size: 12px; color: #666;">${percentage}% concluído</p>`;
+            html += `</div>`;
 
-            roteiros.forEach(aula => {
+            roteiros.forEach((aula, index) => {
+                const isCompleted = progress[index] || false;
                 html += `
-                    <div style="padding: 15px; margin: 10px 0; background: #f5f5f5; border-radius: 6px; border-left: 3px solid #3243c3;">
-                        <h4>Aula ${aula.aula}: ${aula.titulo}</h4>
+                    <div style="padding: 15px; margin: 10px 0; background: ${isCompleted ? '#e8f5e9' : '#f5f5f5'}; border-radius: 6px; border-left: 3px solid ${isCompleted ? '#4caf50' : '#3243c3'}; cursor: pointer;" onclick="toggleAulaProgress(${courseId}, ${index})">
+                        <h4>${isCompleted ? '✅' : '⭕'} Aula ${aula.aula}: ${aula.titulo}</h4>
                         <p style="font-size: 13px; color: #666; margin: 10px 0;">⏱️ ${aula.duracao} minutos</p>
                         <p style="font-size: 13px; color: #666;"><strong>Tópicos:</strong> ${aula.topicos}</p>
                     </div>
@@ -1134,6 +1167,14 @@
             html += `<button class="btn-primary" onclick="showRoteiros()" style="margin-top: 20px;">← Voltar</button></div>`;
 
             document.getElementById('roteirosView').innerHTML = html;
+        }
+
+        function toggleAulaProgress(courseId, aulaIndex) {
+            const progressKey = `progress_${courseId}_${currentUser.username}`;
+            const progress = JSON.parse(localStorage.getItem(progressKey) || '{}');
+            progress[aulaIndex] = !progress[aulaIndex];
+            localStorage.setItem(progressKey, JSON.stringify(progress));
+            showRoteiroDetail(courseId);
         }
 
         // ===== SIDEBAR =====
